@@ -9,13 +9,25 @@ const dashboardWebhookRoutes = require("./routes/dashboardWebhookRoutes");
 const app = express();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://dev-ops-alpha-five.vercel.app",
+  "https://dev-ops-git-main-bbhumi908-9265s-projects.vercel.app",
+];
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   }),
 );
+
 app.use(express.json());
 app.use(cookieParser());
 
